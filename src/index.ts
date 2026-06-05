@@ -14,8 +14,6 @@ export const app = new Hono<{
   Bindings: {
     NX_CACHE_ACCESS_TOKEN: string;
     AWS_REGION: string;
-    AWS_ACCESS_KEY_ID: string;
-    AWS_SECRET_ACCESS_KEY: string;
     S3_BUCKET_NAME: string;
     S3_ENDPOINT_URL: string;
   };
@@ -23,23 +21,6 @@ export const app = new Hono<{
     s3: S3Client;
   };
 }>();
-
-app.use(async (c, next) => {
-  c.set(
-    's3',
-    new S3Client({
-      region: c.env.AWS_REGION,
-      endpoint: c.env.S3_ENDPOINT_URL,
-      credentials: {
-        accessKeyId: c.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: c.env.AWS_SECRET_ACCESS_KEY,
-      },
-      forcePathStyle: true,
-    }),
-  );
-
-  await next();
-});
 
 const auth = () =>
   createMiddleware(async (c, next) => {
@@ -51,14 +32,33 @@ const auth = () =>
       });
     }
 
-    const token = authHeader.split(' ')[1];
+    const headerValue = authHeader.split(' ')[1];
+    const accessToken = headerValue.split(':')[-1];
 
-    if (token !== c.env.NX_CACHE_ACCESS_TOKEN) {
+    if (
+      headerValue.split(':').length != 3 ||
+      accessToken !== c.env.NX_CACHE_ACCESS_TOKEN
+    ) {
       return new Response('Missing or invalid authentication token', {
         status: 401,
         headers: { 'Content-Type': 'text/plain' },
       });
     }
+
+    const [accessKeyId, secretAccessKey] = headerValue.split(':').slice(0, 2);
+
+    c.set(
+      's3',
+      new S3Client({
+        region: c.env.AWS_REGION,
+        endpoint: c.env.S3_ENDPOINT_URL,
+        credentials: {
+          accessKeyId,
+          secretAccessKey,
+        },
+        forcePathStyle: true,
+      }),
+    );
 
     await next();
   });
@@ -227,8 +227,6 @@ if (import.meta.main) {
     app.fetch(req, {
       NX_CACHE_ACCESS_TOKEN: Deno.env.get('NX_CACHE_ACCESS_TOKEN'),
       AWS_REGION: Deno.env.get('AWS_REGION') || 'us-east-1',
-      AWS_ACCESS_KEY_ID: Deno.env.get('AWS_ACCESS_KEY_ID'),
-      AWS_SECRET_ACCESS_KEY: Deno.env.get('AWS_SECRET_ACCESS_KEY'),
       S3_BUCKET_NAME: Deno.env.get('S3_BUCKET_NAME') || 'nx-cloud',
       S3_ENDPOINT_URL: Deno.env.get('S3_ENDPOINT_URL'),
     }));

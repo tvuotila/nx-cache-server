@@ -11,8 +11,6 @@ const CA = Deno.readTextFileSync('./src/fixtures/tls/ca.pem');
 const ENV = {
   NX_CACHE_ACCESS_TOKEN: 'test-token',
   AWS_REGION: 'us-east-1',
-  AWS_ACCESS_KEY_ID: 'test',
-  AWS_SECRET_ACCESS_KEY: 'test',
   S3_BUCKET_NAME: 'nx-cloud',
   S3_ENDPOINT_URL: 'http://localhost:4566',
 };

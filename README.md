@@ -4,6 +4,9 @@ A Deno-based server implementation of the Nx Custom Self-Hosted Remote Cache
 specification. This server provides a caching layer for Nx build outputs using
 Amazon S3 as the storage backend.
 
+Modified to take the aws_access_key and aws_secret_key as url authentication.
+This is so that we can use this in CircleCI.
+
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/template/-bmO7p?referralCode=73cYCO)
 
 ## Overview
@@ -32,8 +35,6 @@ The following environment variables are required:
 
 ```env
 AWS_REGION=your-aws-region
-AWS_ACCESS_KEY_ID=your-access-key
-AWS_SECRET_ACCESS_KEY=your-secret-key
 S3_BUCKET_NAME=your-bucket-name
 S3_ENDPOINT_URL=your-s3-endpoint-url
 NX_CACHE_ACCESS_TOKEN=your-secure-token
@@ -72,8 +73,6 @@ The easiest way to run the server is using the official Docker image:
 docker pull ghcr.io/ikatsuba/nx-cache-server:latest
 docker run -p 3000:3000 \
   -e AWS_REGION=your-aws-region \
-  -e AWS_ACCESS_KEY_ID=your-access-key \
-  -e AWS_SECRET_ACCESS_KEY=your-secret-key \
   -e S3_BUCKET_NAME=your-bucket-name \
   -e S3_ENDPOINT_URL=your-s3-endpoint-url \
   -e NX_CACHE_ACCESS_TOKEN=your-secure-token \
@@ -88,8 +87,6 @@ docker run -p 3000:3000 \
   -e TLS_CERT_PATH=/certs/tls.crt \
   -e TLS_KEY_PATH=/certs/tls.key \
   -e AWS_REGION=your-aws-region \
-  -e AWS_ACCESS_KEY_ID=your-access-key \
-  -e AWS_SECRET_ACCESS_KEY=your-secret-key \
   -e S3_BUCKET_NAME=your-bucket-name \
   -e S3_ENDPOINT_URL=your-s3-endpoint-url \
   -e NX_CACHE_ACCESS_TOKEN=your-secure-token \
@@ -105,8 +102,6 @@ helm install nx-cache oci://ghcr.io/ikatsuba/charts/nx-cache-server \
   --version <X.Y.Z> \
   --namespace nx-cache --create-namespace \
   --set secrets.nxCacheAccessToken=your-secure-token \
-  --set secrets.awsAccessKeyId=your-access-key \
-  --set secrets.awsSecretAccessKey=your-secret-key \
   --set config.s3.bucketName=your-bucket-name \
   --set config.s3.endpointUrl=https://s3.amazonaws.com
 ```
@@ -171,8 +166,7 @@ To use this cache server with your Nx workspace, set the following environment
 variables:
 
 ```bash
-NX_SELF_HOSTED_REMOTE_CACHE_SERVER=http://your-server:3000
-NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN=your-secure-token
+NX_SELF_HOSTED_REMOTE_CACHE_SERVER=http://aws_access_key:aws_secret_key:your-secure-token@your-server:3000
 ```
 
 ## Author

@@ -39,8 +39,6 @@ describe('Cache server routes', () => {
     return await app.fetch(req, {
       NX_CACHE_ACCESS_TOKEN: TOKEN,
       AWS_REGION: 'us-east-1',
-      AWS_ACCESS_KEY_ID: ACCESS_KEY_ID,
-      AWS_SECRET_ACCESS_KEY: SECRET_ACCESS_KEY,
       S3_BUCKET_NAME: BUCKET,
       S3_ENDPOINT_URL: endpoint,
     });

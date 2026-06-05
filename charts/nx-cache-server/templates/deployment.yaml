@@ -56,16 +56,6 @@ spec:
                 secretKeyRef:
                   name: {{ include "nx-cache-server.secretName" . }}
                   key: nx-cache-access-token
-            - name: AWS_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "nx-cache-server.secretName" . }}
-                  key: aws-access-key-id
-            - name: AWS_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "nx-cache-server.secretName" . }}
-                  key: aws-secret-access-key
             {{- if .Values.tls.enabled }}
             - name: TLS_CERT_PATH
               value: {{ printf "%s/%s" .Values.tls.mountPath .Values.tls.certKey | quote }}

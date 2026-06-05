@@ -56,13 +56,9 @@ config:
 # create a Secret, or set existingSecret to the name of an externally managed
 # Secret. The external Secret must contain keys:
 #   - nx-cache-access-token
-#   - aws-access-key-id
-#   - aws-secret-access-key
 secrets:
   existingSecret: ""
   nxCacheAccessToken: ""
-  awsAccessKeyId: ""
-  awsSecretAccessKey: ""
 
 # Optional TLS/HTTPS. When enabled the server reads the cert/key from a mounted
 # Secret and serves HTTPS instead of HTTP. Disabled by default — TLS is commonly

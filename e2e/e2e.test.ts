@@ -58,8 +58,6 @@ describe('Remote Cache', () => {
         PORT: String(cachePort),
         NX_CACHE_ACCESS_TOKEN: CACHE_TOKEN,
         AWS_REGION: 'us-east-1',
-        AWS_ACCESS_KEY_ID: 'AKIAIOSFODNN7EXAMPLE',
-        AWS_SECRET_ACCESS_KEY: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
         S3_BUCKET_NAME: BUCKET,
         S3_ENDPOINT_URL: emulator.url,
       },

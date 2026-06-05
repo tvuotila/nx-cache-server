@@ -54,8 +54,6 @@ jobs:
         run: |
           helm template test charts/nx-cache-server \
             --set secrets.nxCacheAccessToken=token \
-            --set secrets.awsAccessKeyId=key \
-            --set secrets.awsSecretAccessKey=secret \
             --set config.s3.endpointUrl=http://localhost:4566 \
             > /dev/null
   publish:

@@ -12,8 +12,6 @@ helm install nx-cache oci://ghcr.io/ikatsuba/charts/nx-cache-server \
   --version 0.1.0 \
   --namespace nx-cache --create-namespace \
   --set secrets.nxCacheAccessToken=<token> \
-  --set secrets.awsAccessKeyId=<key> \
-  --set secrets.awsSecretAccessKey=<secret> \
   --set config.s3.bucketName=nx-cloud \
   --set config.s3.endpointUrl=https://s3.amazonaws.com
 ```
@@ -25,9 +23,7 @@ Create a Secret with the three required keys and reference it via
 
 ```bash
 kubectl create secret generic nx-cache-creds \
-  --from-literal=nx-cache-access-token=<token> \
-  --from-literal=aws-access-key-id=<key> \
-  --from-literal=aws-secret-access-key=<secret>
+  --from-literal=nx-cache-access-token=<token>
 
 helm install nx-cache oci://ghcr.io/ikatsuba/charts/nx-cache-server \
   --version 0.1.0 \
@@ -48,11 +44,6 @@ serviceAccount:
 secrets:
   existingSecret: nx-cache-token-only  # holding only nx-cache-access-token
 ```
-
-When using IRSA you still need `aws-access-key-id` / `aws-secret-access-key`
-keys in the Secret because the server reads them from env vars. To opt fully
-out of static keys, fork the chart or set them to empty placeholders if your
-S3 client picks up the IAM role from the metadata service.
 
 ## Serving over HTTPS
 
@@ -96,8 +87,6 @@ helm install nx-cache oci://ghcr.io/ikatsuba/charts/nx-cache-server \
 | `config.s3.endpointUrl` | `""` | **Required.** `S3_ENDPOINT_URL` |
 | `secrets.existingSecret` | `""` | If set, skip Secret creation and use this one |
 | `secrets.nxCacheAccessToken` | `""` | Required if `existingSecret` is empty |
-| `secrets.awsAccessKeyId` | `""` | Required if `existingSecret` is empty |
-| `secrets.awsSecretAccessKey` | `""` | Required if `existingSecret` is empty |
 | `tls.enabled` | `false` | Serve over HTTPS using a mounted cert/key |
 | `tls.secretName` | `""` | Existing Secret holding the PEM cert/key. Required when `tls.enabled` |
 | `tls.certKey` | `tls.crt` | Key in the Secret holding the PEM cert |
@@ -113,5 +102,5 @@ helm install nx-cache oci://ghcr.io/ikatsuba/charts/nx-cache-server \
 | `podSecurityContext` | `{}` | |
 | `securityContext` | `{}` | |
 
-When using `secrets.existingSecret`, the Secret must contain the keys
-`nx-cache-access-token`, `aws-access-key-id`, `aws-secret-access-key`.
+When using `secrets.existingSecret`, the Secret must contain the key
+`nx-cache-access-token`
