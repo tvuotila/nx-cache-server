@@ -63,7 +63,7 @@ jobs:
       - checks
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: ikatsuba/nx-cache-server
+      IMAGE_NAME: tvuotila/nx-cache-server
     permissions:
       contents: read
       packages: write
@@ -130,4 +130,4 @@ jobs:
       - name: Login to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push chart to GHCR
-        run: helm push "nx-cache-server-${{ steps.ver.outputs.version }}.tgz" oci://ghcr.io/ikatsuba/charts
+        run: helm push "nx-cache-server-${{ steps.ver.outputs.version }}.tgz" oci://ghcr.io/tvuotila/charts
