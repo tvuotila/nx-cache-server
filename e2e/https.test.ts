@@ -1,6 +1,7 @@
 import $ from '@david/dax';
 import { assertEquals } from '@std/assert';
 import { afterAll, beforeAll, describe, it } from '@std/testing/bdd';
+import { Buffer } from 'node:buffer';
 import { join } from '@std/path/join';
 import { startEmulator } from '../scripts/start-emulator.ts';
 
