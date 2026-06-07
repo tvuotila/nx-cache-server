@@ -2,6 +2,7 @@ import { assertEquals, assertExists } from '@std/assert';
 import { afterAll, beforeAll, describe, it } from '@std/testing/bdd';
 import { startEmulator } from '../scripts/start-emulator.ts';
 import { app } from './index.ts';
+import { Buffer } from 'node:buffer';
 
 const ACCESS_KEY_ID = 'AKIAIOSFODNN7EXAMPLE';
 const SECRET_ACCESS_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY';

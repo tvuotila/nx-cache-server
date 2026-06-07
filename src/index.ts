@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer';
 import { Hono } from 'hono';
 import { createMiddleware } from 'hono/factory';
 import { logger } from 'hono/logger';
