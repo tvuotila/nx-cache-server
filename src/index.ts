@@ -25,15 +25,16 @@ export const app = new Hono<{
 const auth = () =>
   createMiddleware(async (c, next) => {
     const authHeader = c.req.header('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith('Basic ')) {
       return new Response('Missing or invalid authentication token', {
         status: 401,
         headers: { 'Content-Type': 'text/plain' },
       });
     }
 
-    const headerValue = authHeader.split(' ')[1];
-    const accessToken = headerValue.split(':')[-1];
+    const headerEncodedValue = authHeader.split(' ')[1];
+    const headerValue = Buffer.from(headerEncodedValue, 'base64').toString();
+    const accessToken = headerValue.split(':').pop();
 
     if (
       headerValue.split(':').length != 3 ||

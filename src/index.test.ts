@@ -7,6 +7,8 @@ const ACCESS_KEY_ID = 'AKIAIOSFODNN7EXAMPLE';
 const SECRET_ACCESS_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY';
 const BUCKET = 'nx-cloud';
 const TOKEN = 'test-token';
+const AUTH = Buffer.from(`${ACCESS_KEY_ID}:${SECRET_ACCESS_KEY}:${TOKEN}`)
+  .toString('base64');
 
 describe('Cache server routes', () => {
   let endpoint: string;
@@ -30,7 +32,7 @@ describe('Cache server routes', () => {
     const req = new Request(`http://localhost${path}`, {
       method,
       headers: {
-        'Authorization': `Bearer ${TOKEN}`,
+        'Authorization': `Basic ${AUTH}`,
         ...headers,
       },
       body: body as BodyInit | undefined,

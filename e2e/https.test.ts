@@ -11,7 +11,12 @@ const EMULATE_PORT = 4567;
 const CA = join(Deno.cwd(), 'src', 'fixtures', 'tls', 'ca.pem');
 const CERT = join(Deno.cwd(), 'src', 'fixtures', 'tls', 'cert.pem');
 const KEY = join(Deno.cwd(), 'src', 'fixtures', 'tls', 'key.pem');
-const AUTH = `Authorization: Bearer ${CACHE_TOKEN}`;
+const AWS_ACCESS_KEY_ID = 'AKIAIOSFODNN7EXAMPLE';
+const AWS_SECRET_ACCESS_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY';
+const AUTH = `Authorization: Basic ${
+  Buffer.from(`${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}:${CACHE_TOKEN}`)
+    .toString('base64')
+}`;
 
 function getFreePort(): number {
   const listener = Deno.listen({ port: 0 });

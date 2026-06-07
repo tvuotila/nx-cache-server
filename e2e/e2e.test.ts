@@ -30,6 +30,9 @@ async function waitForHealth(url: string, timeoutMs = 15000): Promise<void> {
 }
 
 const CACHE_TOKEN = 'test-token';
+const AWS_ACCESS_KEY_ID = 'AKIAIOSFODNN7EXAMPLE';
+// Prematurely url encode for simplicity
+const AWS_SECRET_ACCESS_KEY = 'wJalrXUtnFEMI%2FK7MDENG%2FbPxRfiCYEXAMPLEKEY';
 const BUCKET = 'nx-cloud';
 const EMULATE_PORT = 4566;
 
@@ -43,7 +46,8 @@ describe('Remote Cache', () => {
     emulator = await startEmulator({ port: EMULATE_PORT, bucket: BUCKET });
 
     const cachePort = getFreePort();
-    cacheServerUrl = `http://localhost:${cachePort}`;
+    cacheServerUrl =
+      `http://${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}:${CACHE_TOKEN}@localhost:${cachePort}`;
 
     cacheServer = new Deno.Command(Deno.execPath(), {
       args: [
@@ -65,7 +69,7 @@ describe('Remote Cache', () => {
       stderr: 'inherit',
     }).spawn();
 
-    await waitForHealth(cacheServerUrl);
+    await waitForHealth(`http://localhost:${cachePort}`);
 
     await $`rm -rf tmp`;
     await $`mkdir -p tmp`;
@@ -89,13 +93,10 @@ describe('Remote Cache', () => {
 
     await $`echo 'NX_SELF_HOSTED_REMOTE_CACHE_SERVER=${cacheServerUrl}' >> .env`
       .cwd(workspacePath);
-    await $`echo 'NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN=${CACHE_TOKEN}' >> .env`
-      .cwd(workspacePath);
 
     const firstBuild = await $`npx nx build web --verbose`
       .cwd(workspacePath)
       .env('NX_SELF_HOSTED_REMOTE_CACHE_SERVER', cacheServerUrl)
-      .env('NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN', CACHE_TOKEN)
       .printCommand().stdout('inheritPiped');
 
     if (
@@ -110,7 +111,6 @@ describe('Remote Cache', () => {
     const secondBuild = await $`npx nx build web`
       .cwd(workspacePath)
       .env('NX_SELF_HOSTED_REMOTE_CACHE_SERVER', cacheServerUrl)
-      .env('NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN', CACHE_TOKEN)
       .printCommand().stdout('inheritPiped');
 
     if (
